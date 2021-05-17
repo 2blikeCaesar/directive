@@ -1,17 +1,42 @@
 <template>
   <div id="app">
-    <input-test></input-test>
+    <base-input  ref="input" @entered="onEntered"></base-input>
+    <PortalTarget name="test"/>
+    <portal v-if="showPopup" to="test">
+      <alert :show-popup="showPopup" @close="onClose"></alert>
+    </portal>
   </div>
 </template>
 
 <script>
-import InputTest from "@/components/InputTest";
+import BaseInput from "@/components/BaseInput";
+import Alert from "@/components/Alert";
 
 export default {
   name: 'App',
   components: {
-    InputTest,
-  }
+    Alert,
+    BaseInput,
+  },
+  data() {
+    return {
+      showPopup: false,
+      focusRef: null,
+    };
+  },
+  mounted() {
+    this.$refs['input'].$refs['input'].focus();
+  },
+  methods: {
+    onEntered() {
+      this.focusRef = this.$refs['input'];
+      this.showPopup = true;
+    },
+    onClose() {
+      this.focusRef.$refs['input'].focus();
+      this.showPopup = false;
+    },
+  },
 }
 </script>
 
